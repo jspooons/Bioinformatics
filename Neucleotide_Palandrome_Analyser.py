@@ -1,3 +1,52 @@
+import pygame
+from settings import *
+
+
+class Game:
+    def __init__(self):
+        pygame.init()
+
+        # Create a screen and a clock
+        self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+        self.clock = pygame.time.Clock()
+
+        self.running = True
+        # Load assets like textures and audio
+        self.load_data()
+
+    def load_data(self):
+        pass
+
+    def new(self):
+
+        self.run()
+
+    def run(self):
+        self.playing = True
+        while self.playing:
+            self.dt = self.clock.tick(FPS) / 1000
+            self.events()
+            self.update()
+
+            self.draw()
+
+    def events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                if self.playing:
+                    self.playing = False
+                self.running = False
+
+    def update(self):
+        None
+
+    def draw(self):
+        self.screen.fill(LIGHTGREY)
+        #pygame.display.set_caption(f"{self.clock.get_fps():.2F} FPS")
+
+        pygame.display.flip()
+
+
 def equal(str, arr):
     for i in range(len(str) - 1):
         if str[i] == arr[i]:
@@ -54,10 +103,19 @@ def findPalandromes(minPal, sequence, comp_seq):
 
 
 def main():
-    sequence, minPal = getSequenceAndMinPalandromeLength()
-    comp_seq = getReverseComplement(sequence)
-    findPalandromes(minPal, sequence, comp_seq)
+    #sequence, minPal = getSequenceAndMinPalandromeLength()
+    #comp_seq = getReverseComplement(sequence)
+    #findPalandromes(minPal, sequence, comp_seq)
+
+    game = Game()
+    while game.running:
+        game.new()
+
+    pygame.quit()
+    quit()
 
 
 if __name__ == "__main__":
     main()
+
+
