@@ -1,6 +1,12 @@
 import pygame
 from settings import *
 
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
+
+
 # longest sequence length is 666 (pygame will do a 18x37 window for the window size i have made)
 
 class Game:
@@ -75,7 +81,7 @@ def getSequenceAndMinPalandromeLength():
     #sequence = input("Enter your sequence: \n")
     #print('\n')
     #sequence = 'AAATTTATAGAAGAGTCTAGACATG'
-    sequence = 'GAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG'
+    sequence = 'GAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG'
     sequence.replace(" ", "")
     sequence.upper()
 
@@ -120,13 +126,27 @@ def findPalandromes(minPal, sequence, comp_seq):
 def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
     # first, split the text into words
     words = list(text)
+
     # now, construct lines out of these words
     lines = []
+    lines_ = []
+    counter = 0
+    # TO DO: counter for counting letter position
     while len(words) > 0:
         # get as many words as will fit within allowed_width
         line_words = []
         while len(words) > 0:
+            counter+=1
+            #print(counter)
+            for i in range(len(info)):
+                if (info[i][0] == counter):
+                    line_words[len(line_words)-1] = '\u0332'+line_words[len(line_words)-1]
+
             line_words.append(words.pop(0))
+            #print(line_words)
+            #if (len(line_words) == 0):
+
+
             fw, fh = font.size(' '.join(line_words + words[:1]))
             if fw > allowed_width:
                 break
@@ -134,6 +154,11 @@ def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
         # add a line consisting of those words
         line = ' '.join(line_words)
         lines.append(line)
+    #print(lines)
+    #lines[0][0] = lines[0][0]+'\u0332'
+    #test = [['d','d']]
+    #test[0][0] = test[0][0]+'e'+'d'
+    #print(test)
 
     # now we've split our text into lines that fit into the width, actually
     # render them
@@ -159,17 +184,28 @@ def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
         y_offset += fh
 
 
+def drawtext():
+    img = Image.new('RGB', (200, 30), color=(73, 109, 137))
+
+    fnt = ImageFont.truetype('/Library/Fonts/arial.ttf', 20)
+    d = ImageDraw.Draw(img)
+    d.text((10, 10), "Hello world", font=fnt, fill=(255, 255, 0))
+
+    img.save('pil_text_font.png')
+
 def main():
-    sequence, minPal = getSequenceAndMinPalandromeLength()
-    comp_seq = getReverseComplement(sequence)
-    palandrome_data = findPalandromes(minPal, sequence, comp_seq)
+    #sequence, minPal = getSequenceAndMinPalandromeLength()
+    #comp_seq = getReverseComplement(sequence)
+    #palandrome_data = findPalandromes(minPal, sequence, comp_seq)
 
-    game = Game(sequence, palandrome_data)
-    while game.running:
-        game.new()
+    #game = Game(sequence, palandrome_data)
+    #while game.running:
+    #    game.new()
 
-    pygame.quit()
-    quit()
+    #pygame.quit()
+    #quit()
+
+    drawtext()
 
 
 if __name__ == "__main__":
