@@ -1,4 +1,17 @@
 # Bioinformatics
 Small repository for small programs making analyses of gene and protein sequences a lil bit easier :P
 
-test
+My setup is Anaconda environment on Pycharm
+I installed pillow via 'pip install pillow' in the pycharm terminal
+
+If you are experiencing OSError from not having arial font installed for example, there are solutions online. One that worked for a friend who just copied and pasted this code into Spyder in Anaconda (Anaconda has pillow automatically downloaded btw), then download arial.ttf from here: https://github.com/JotJunior/PHP-Boleto-ZF2/blob/master/public/assets/fonts/arial.ttf
+
+Put arial.ttf in the location of where your .py file is with your copied and pasted code.
+
+Then on lines 161 and 140, change /Library/Fonts/arial.ttf to arial.ttf
+
+Last thing, the output image is called 'palindromes.png' and is saved to the location of where your .py file is.
+
+
+
+Enjoy :)
