@@ -1,67 +1,19 @@
-import pygame
-from settings import *
-
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from math import floor
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+PURPLE = (128, 0, 128)
+YELLOW = (255, 255, 0)
+ORANGE = (255, 165, 0)
+LIGHTGREY = (220, 220, 220)
 
 
-
-# longest sequence length is 666 (pygame will do a 18x37 window for the window size i have made)
-
-class Game:
-    def __init__(self, sequence, info):
-        self.sequence = sequence
-        self.info = info
-
-        pygame.init()
-
-        # Create a screen and a clock
-        self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
-        self.clock = pygame.time.Clock()
-
-        self.running = True
-        # Load assets like textures and audio
-        self.load_data()
-
-    def load_data(self):
-        pass
-
-    def new(self):
-
-        self.run()
-
-    def run(self):
-        self.playing = True
-        while self.playing:
-            self.dt = self.clock.tick(FPS) / 1000
-            self.events()
-            self.update()
-
-            self.draw()
-
-    def events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.running = False
-
-    def update(self):
-        None
-
-    def draw(self):
-        self.screen.fill(LIGHTGREY)
-        #pygame.display.set_caption(f"{self.clock.get_fps():.2F} FPS")
-
-        pygame.font.init()  # you have to call this at the start,
-        # if you want to use this module.
-        myfont = pygame.font.SysFont('Arial', 30)
-        #textsurface = myfont.render(self.sequence, False, (0, 0, 0))
-        renderTextCenteredAt(self.sequence, myfont, BLACK, 450, 0, self.screen, 900, self.info)
-        #self.screen.blit(textsurface, (0, 0))
-
-        pygame.display.flip()
 
 
 def equal(str, arr):
@@ -81,7 +33,7 @@ def getSequenceAndMinPalandromeLength():
     #sequence = input("Enter your sequence: \n")
     #print('\n')
     #sequence = 'AAATTTATAGAAGAGTCTAGACATG'
-    sequence = 'GAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG'
+    sequence = 'GAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG'
     sequence.replace(" ", "")
     sequence.upper()
 
@@ -123,7 +75,7 @@ def findPalandromes(minPal, sequence, comp_seq):
     return palandrome_data
 
 
-def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
+def renderTextCenteredAt(text, font, colour, x, y, d, allowed_width, info, img):
     # first, split the text into words
     words = list(text)
 
@@ -140,14 +92,14 @@ def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
             #print(counter)
             for i in range(len(info)):
                 if (info[i][0] == counter):
-                    line_words[len(line_words)-1] = '\u0332'+line_words[len(line_words)-1]
+                    line_words[len(line_words)-1] = line_words[len(line_words)-1]
 
             line_words.append(words.pop(0))
             #print(line_words)
             #if (len(line_words) == 0):
 
 
-            fw, fh = font.size(' '.join(line_words + words[:1]))
+            fw, fh = font.getsize(' '.join(line_words + words[:1]))
             if fw > allowed_width:
                 break
 
@@ -166,49 +118,77 @@ def renderTextCenteredAt(text, font, colour, x, y, screen, allowed_width, info):
     # we'll render each line below the last, so we need to keep track of
     # the culmative height of the lines we've rendered so far
     y_offset = 0
+    ty=0
     for line in lines:
         line_len = len(line)
 
 
 
-        fw, fh = font.size(line)
+        fw, fh = font.getsize(line)
 
         # (tx, ty) is the top-left of the font surface
         tx = x - fw / 2
         ty = y + y_offset
         #font.set_underline(True)
 
-        font_surface = font.render(line, True, colour)
-        screen.blit(font_surface, (tx, ty))
+        d.text((tx, ty), line, font=font, fill=BLACK)
 
         y_offset += fh
 
+    return img, ty+fh+5
 
-def drawtext():
-    img = Image.new('RGB', (200, 30), color=(73, 109, 137))
+
+def findLargestChar(chars, font):
+    largest = chars[0]
+
+    for i in range(1, len(chars) - 1):
+        if font.getsize(chars[i]) > font.getsize(largest):
+            largest = chars[i]
+
+    return largest
+
+
+def checkFit(width, height, text, font, largest):
+    largest_size = font.getsize(largest)
+    length = len(text)
+
+    width_amount = floor(width/largest_size)
+    height_amount = floor(height/largest_size)
+
+    if width_amount * height_amount <= length:
+        return False
+
+    return True, width_amount, height_amount
+
+
+def optimise(no_chars):
+    cols = 1;
+    rows = 1;
+
+    while (no_chars > cols * rows):
+        cols += 1;
+        if (no_chars > cols * rows):
+            rows += 1;
+        else:
+            break
+
+
+def drawText(sequence, seq_info, width, height, colour, background):
+    img = Image.new('RGB', (width, height), color=background)
 
     fnt = ImageFont.truetype('/Library/Fonts/arial.ttf', 20)
     d = ImageDraw.Draw(img)
-    d.text((10, 10), "Hello world", font=fnt, fill=(255, 255, 0))
 
-    img.save('pil_text_font.png')
+    img2 = img.crop((0,0,width,height))
+    img2.save('pil_text_font.png')
+    img2.show()
+
 
 def main():
-    #sequence, minPal = getSequenceAndMinPalandromeLength()
-    #comp_seq = getReverseComplement(sequence)
-    #palandrome_data = findPalandromes(minPal, sequence, comp_seq)
-
-    #game = Game(sequence, palandrome_data)
-    #while game.running:
-    #    game.new()
-
-    #pygame.quit()
-    #quit()
-
-    drawtext()
+    sequence, minPal = getSequenceAndMinPalandromeLength()
+    comp_seq = getReverseComplement(sequence)
+    palandrome_data = findPalandromes(minPal, sequence, comp_seq)
 
 
 if __name__ == "__main__":
     main()
-
-
