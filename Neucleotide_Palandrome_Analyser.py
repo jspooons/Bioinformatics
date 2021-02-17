@@ -37,8 +37,8 @@ def getSequenceAndMinPalandromeLength(minPal, sequence):
     #print('\n')
     #sequence = 'AAATTTATAGAAGAGTCTAGACATG'
     #sequence = 'GAAATTTAAAAAAAAAATTTAAAATTTG'
-    sequence.replace(" ", "")
-    sequence.upper()
+    sequence = sequence.replace(" ", "")
+    sequence = sequence.upper()
 
     return sequence, int(minPal)
 
