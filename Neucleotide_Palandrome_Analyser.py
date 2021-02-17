@@ -16,9 +16,6 @@ ORANGE = (255, 165, 0)
 LIGHTGREY = (220, 220, 220)
 
 
-
-
-
 def equal(str, arr):
     for i in range(len(str) - 1):
         if str[i] == arr[i]:
