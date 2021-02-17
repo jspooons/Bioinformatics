@@ -163,7 +163,11 @@ def drawText(sequence, seq_info, width, height, colour, background):
                     subfontsize = floor(fontsize/4)
                     subfnt = ImageFont.truetype('/Library/Fonts/arial.ttf', subfontsize)
                     d.text((j * w +w, i * h +h*0.8), str(counter+1), font=subfnt, fill=BLUE)
-                    d.text((j * w + w, i * h), str(pal_lengths[counter]), font=subfnt, fill=GREEN)
+                    pal_length = 0
+                    for k in range(len(seq_info)):
+                        if seq_info[k][0] == counter+1:
+                            pal_length = seq_info[k][1]
+                    d.text((j * w + w, i * h+h*0.1), str(pal_length), font=subfnt, fill=GREEN)
                 else:
                     d.text((j * w, i * h), sequence[counter], font=fnt, fill=colour)
 
