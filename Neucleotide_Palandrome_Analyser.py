@@ -2,6 +2,8 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 from math import floor
+import tkinter as tk
+from functools import partial
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -14,6 +16,9 @@ ORANGE = (255, 165, 0)
 LIGHTGREY = (220, 220, 220)
 
 
+
+
+
 def equal(str, arr):
     for i in range(len(str) - 1):
         if str[i] == arr[i]:
@@ -24,18 +29,18 @@ def equal(str, arr):
     return True
 
 
-def getSequenceAndMinPalandromeLength():
-    minPal = 6
+def getSequenceAndMinPalandromeLength(minPal, sequence):
+    #minPal = 6
     #minPal = int(input("Enter a minimum palandrome length: \n"))
 
     #sequence = input("Enter your sequence: \n")
     #print('\n')
     #sequence = 'AAATTTATAGAAGAGTCTAGACATG'
-    sequence = 'GAAATTTAAAAAAAAAATTTAAAATTTG'
+    #sequence = 'GAAATTTAAAAAAAAAATTTAAAATTTG'
     sequence.replace(" ", "")
     sequence.upper()
 
-    return sequence, minPal
+    return sequence, int(minPal)
 
 
 def getReverseComplement(sequence):
@@ -113,8 +118,12 @@ def optimise(num_elems):
     return cols, rows
 
 
-def column(matrix, i):
+def getPos_column(matrix, i):
     return [row[i]-1 for row in matrix]
+
+
+def getLen_column(matrix):
+    return [row[1] for row in matrix]
 
 
 def drawText(sequence, seq_info, width, height, colour, background):
@@ -127,7 +136,8 @@ def drawText(sequence, seq_info, width, height, colour, background):
     w = 0
     h = 0
     fnt = ''
-    pal_positions = column(seq_info,0)
+    pal_positions = getPos_column(seq_info,0)
+    pal_lengths = getLen_column(seq_info)
 
     while fit != 2:
         fnt = ImageFont.truetype('/Library/Fonts/arial.ttf', fontsize)
@@ -153,6 +163,7 @@ def drawText(sequence, seq_info, width, height, colour, background):
                     subfontsize = floor(fontsize/4)
                     subfnt = ImageFont.truetype('/Library/Fonts/arial.ttf', subfontsize)
                     d.text((j * w +w, i * h +h*0.8), str(counter+1), font=subfnt, fill=BLUE)
+                    d.text((j * w + w, i * h), str(pal_lengths[counter]), font=subfnt, fill=GREEN)
                 else:
                     d.text((j * w, i * h), sequence[counter], font=fnt, fill=colour)
 
@@ -162,13 +173,52 @@ def drawText(sequence, seq_info, width, height, colour, background):
     img.show()
 
 
-def main():
-    sequence, minPal = getSequenceAndMinPalandromeLength()
+def run(minPal, sequence):
+    sequence, minPal = getSequenceAndMinPalandromeLength(minPal, sequence)
     comp_seq = getReverseComplement(sequence)
-    palandrome_data = findPalandromes(minPal, sequence, comp_seq)
+    palindrome_data = findPalandromes(minPal, sequence, comp_seq)
+    drawText(sequence, palindrome_data, 900, 600, BLACK, LIGHTGREY)
 
-    drawText(sequence, palandrome_data, 900, 600, BLACK, LIGHTGREY)
 
+class App:
+
+    def __init__(self, root):
+        self.root = root
+        self.root.title("App")
+        self.canvas = tk.Canvas(self.root, width=400, height=450, relief='raised')
+        self.canvas.pack()
+
+        self.setup()
+
+    def setup(self):
+        label1 = tk.Label(self.root, text='Nucleotide Palindrome Analyser')
+        label1.config(font=('helvetica', 14))
+        self.canvas.create_window(200, 25, window=label1)
+
+        label2 = tk.Label(self.root, text='Min palindrome length:')
+        label2.config(font=('helvetica', 10))
+        self.canvas.create_window(200, 100, window=label2)
+
+        entry1 = tk.Entry(self.root)
+        self.canvas.create_window(200, 140, window=entry1)
+
+        label3 = tk.Label(self.root, text='Nucleotide sequence:')
+        label3.config(font=('helvetica', 10))
+        self.canvas.create_window(200, 240, window=label3)
+
+        entry2 = tk.Entry(self.root)
+        self.canvas.create_window(200, 280, window=entry2)
+
+        button1 = tk.Button(text='Get Palindromes', command=lambda: run(entry1.get(), entry2.get()), bg='brown',
+                            fg='white',
+                            font=('helvetica', 9, 'bold'))
+        self.canvas.create_window(200, 380, window=button1)
+
+
+def main():
+    root = tk.Tk()
+    app = App(root)
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
