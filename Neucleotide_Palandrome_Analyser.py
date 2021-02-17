@@ -169,7 +169,7 @@ def drawText(sequence, seq_info, width, height, colour, background):
 
                 counter += 1
 
-    img.save('pil_text_font.png')
+    img.save('palindromes.png')
     img.show()
 
 
