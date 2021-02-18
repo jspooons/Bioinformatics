@@ -58,14 +58,17 @@ def findPalandromes(minPal, sequence, comp_seq):
     len_seq = len(sequence)
 
     palandromes_and_pos = []
-    palandrome_data = []
+    palandrome_data = {}
     # palandromes = []
     for j in range(len_seq - minPal+1):
         l = minPal
         while l + j <= len_seq:
             if equal(sequence[j:l + j], list(reversed(comp_seq[j:l + j]))):
                 palandromes_and_pos.append([sequence[j:l + j], j + 1])  # palandrome and position
-                palandrome_data.append([j+1, l])  # position of a palandrome and the length of it
+                if (j) not in palandrome_data:
+                    palandrome_data[j] = [l]
+                else:
+                    palandrome_data[j].append(l)  # position of a palandrome and the length of it
                 # palandromes.append(sequence[j:l+j])
             l += 1
 
@@ -92,9 +95,10 @@ def checkFit(width, height, text, font, largest):
     width_amount = floor(width/largest_size[0])
     height_amount = floor(height/largest_size[1])
 
-    if length > ((floor(width_amount/2) + 1) * height_amount):  # too big (letters over fill)
+    if length > ((floor(width_amount/2) ) * height_amount):  # too big (letters over fill)
         return 0, -1, -1
-    elif length < ((floor(width_amount/2) + 1) * (height_amount-1)) + 1:  # too small (letters under fill)
+    elif length < ((floor(width_amount/2) ) * (height_amount-1)) + 1:  # too
+        # small (letters under fill)
         return 1, -1, -1
     else:
         return 2, width_amount, height_amount
@@ -133,8 +137,8 @@ def drawText(sequence, seq_info, width, height, colour, background):
     w = 0
     h = 0
     fnt = ''
-    pal_positions = getPos_column(seq_info,0)
-    pal_lengths = getLen_column(seq_info)
+    #pal_positions = getPos_column(seq_info,0)
+    #pal_lengths = getLen_column(seq_info)
 
     while fit != 2:
         fnt = ImageFont.truetype('/Library/Fonts/arial.ttf', fontsize)
@@ -152,19 +156,29 @@ def drawText(sequence, seq_info, width, height, colour, background):
     for i in range(allowed_num_rows):
         for j in range(allowed_num_cols):
             if j % 2 == 0:
-                if (counter== len(sequence)):
+                if counter== len(sequence):
                     break
 
-                if counter in pal_positions:
+                if counter in seq_info:
                     d.text((j * w, i * h), sequence[counter], font=fnt, fill=RED)
                     subfontsize = floor(fontsize/4)
                     subfnt = ImageFont.truetype('/Library/Fonts/arial.ttf', subfontsize)
                     d.text((j * w +w, i * h +h*0.8), str(counter+1), font=subfnt, fill=BLUE)
-                    pal_length = 0
-                    for k in range(len(seq_info)):
-                        if seq_info[k][0] == counter+1:
-                            pal_length = seq_info[k][1]
-                    d.text((j * w + w, i * h+h*0.1), str(pal_length), font=subfnt, fill=GREEN)
+                    string = ''
+                    print(seq_info[counter])
+                    for k in seq_info[counter]:
+                        if len(string) == 0:
+                            string = str(k)
+                        else:
+                            string = string + ',' + str(k)
+                    if len(string) > 5:
+                        subfontsize = floor((fontsize / 4)*0.92**(len(
+                            string)-3))
+                        subfnt = ImageFont.truetype('/Library/Fonts/arial.ttf',
+                                                    subfontsize)
+                    d.text((j * w + w, i * h+h*0.1), str(string),
+                           font=subfnt,
+                           fill=ORANGE)
                 else:
                     d.text((j * w, i * h), sequence[counter], font=fnt, fill=colour)
 
@@ -221,5 +235,7 @@ def main():
     app = App(root)
     root.mainloop()
 
+
 if __name__ == "__main__":
     main()
+
