@@ -16,3 +16,4 @@ Enjoy :)
 
 
 ### Here is an example:
+![palindromes_example](https://user-images.githubusercontent.com/25199093/108338218-ea6a4700-71cd-11eb-82b6-400b2f9daf43.png)
