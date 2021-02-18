@@ -72,7 +72,7 @@ def findPalandromes(minPal, sequence, comp_seq):
                 # palandromes.append(sequence[j:l+j])
             l += 1
 
-    print('Printing list [[palandrome, position]... ]\n')
+    print('Printing list [[palandrome, position]... ]\n') # text alternative
     print(palandromes_and_pos)
 
     return palandrome_data
@@ -165,7 +165,6 @@ def drawText(sequence, seq_info, width, height, colour, background):
                     subfnt = ImageFont.truetype('/Library/Fonts/arial.ttf', subfontsize)
                     d.text((j * w +w, i * h +h*0.8), str(counter+1), font=subfnt, fill=BLUE)
                     string = ''
-                    print(seq_info[counter])
                     for k in seq_info[counter]:
                         if len(string) == 0:
                             string = str(k)
