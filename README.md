@@ -14,5 +14,5 @@ Last thing, the output image is called 'palindromes.png' and is saved to the loc
 
 Enjoy :)
 
-Here is an example:
-![alt text](https://github.com/jspooons/Bioinformatics/blob/master/palindrome_example.png?raw=true)
+
+### Here is an example:
