@@ -8,7 +8,7 @@ If you are experiencing OSError from not having arial font installed for example
 
 Put arial.ttf in the location of where your .py file is with your copied and pasted code.
 
-Then on lines 161 and 140, change /Library/Fonts/arial.ttf to arial.ttf
+Then on lines 175 and 166, change /Library/Fonts/arial.ttf to arial.ttf
 
 Last thing, the output image is called 'palindromes.png' and is saved to the location of where your .py file is.
 
